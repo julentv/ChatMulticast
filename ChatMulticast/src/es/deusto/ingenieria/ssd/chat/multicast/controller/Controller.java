@@ -27,6 +27,9 @@ public class Controller {
 	public Controller(JFrameMainWindow jFrameMainWindow){
 		window=jFrameMainWindow;
 	}
+	public void proccesInputMessage (String message){
+		//el switch case con todos los mensajes aqui.
+	}
 	
 	private void sendDatagramPacket(String message){
 		try  {
