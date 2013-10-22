@@ -7,22 +7,27 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
 
+import es.deusto.ingenieria.ssd.chat.multicast.gui.JFrameMainWindow;
+
 public class Controller {
 	private  String ip;
 	//private static final String DEFAULT_IP = "228.5.6.7";
 	private int port ;
 	private InetAddress group;
+	private JFrameMainWindow window;
 	public MulticastSocket multicastSocket;
 	//private static final String DEFAULT_MESSAGE = "Hello World!";
 	
 	//tiene a la ventana y el hilo
+	public Controller(JFrameMainWindow jFrameMainWindow){
+		window=jFrameMainWindow;
+	}
 	
 	private void sendDatagramPacket(String message){
 		try  {
 											
 			DatagramPacket messageOut = new DatagramPacket(message.getBytes(), message.length(), group, port);
 			multicastSocket.send(messageOut);
-			
 			System.out.println(" - Sent a message to '" + messageOut.getAddress().getHostAddress() + ":" + messageOut.getPort() + 
 			                   "' -> " + new String(messageOut.getData()));
 			

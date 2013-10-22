@@ -36,6 +36,8 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
+import es.deusto.ingenieria.ssd.chat.multicast.controller.Controller;
+
 public class JFrameMainWindow extends JFrame implements Observer, WindowListener{
 
 	private static final long serialVersionUID = 1L;
@@ -49,14 +51,15 @@ public class JFrameMainWindow extends JFrame implements Observer, WindowListener
 	private JTextArea textAreaSendMsg;
 	private JButton btnSendMsg;
 	private JButton btnReloadListOfUsers;
-	private SimpleDateFormat textFormatter = new SimpleDateFormat("HH:mm:ss");	
+	private SimpleDateFormat textFormatter = new SimpleDateFormat("HH:mm:ss");
+	private Controller controller;
 
 	/**
 	 * Create the frame.
 	 */
 	public JFrameMainWindow() {
 		//Add the frame as Observer of the Controller
-		
+		controller=new Controller(this);
 		setResizable(false);
 		setType(Type.UTILITY);
 		setTitle("Chat main window");
@@ -283,25 +286,6 @@ public class JFrameMainWindow extends JFrame implements Observer, WindowListener
 	}
 	
 	private void btnSendClick() {
-	}
-	
-
-	public void endConversationMessage(){
-		String time = textFormatter.format(new Date());		
-		String newMessage = " " + time + ": CONVERSATION FINISHED\n";
-		appendMessageToHistory(newMessage, Color.GREEN); 
-	}
-	public void startConversationMessage(){
-	}
-	public void appendReceivedMessageToHistory(String message, String user, long timestamp) {		
-		String time = textFormatter.format(new Date(timestamp));		
-		String newMessage = " " + time + " - [" + user + "]: " + message.trim() + "\n";
-		appendMessageToHistory(newMessage, Color.MAGENTA); 
-	}
-	public void appendMyMessageToHistory(String message, String user, long timestamp) {		
-		String time = textFormatter.format(new Date(timestamp));		
-		String newMessage = " " + time + " - [" + user + "]: " + message.trim() + "\n";
-		appendMessageToHistory(newMessage, Color.BLUE); 
 	}
 	public void appendMessageToHistory(String message, Color color){
 		SimpleAttributeSet attrs = new SimpleAttributeSet();
