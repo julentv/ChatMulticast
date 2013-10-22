@@ -204,20 +204,6 @@ public class JFrameMainWindow extends JFrame implements Observer, WindowListener
 		btnSendMsg.setEnabled(false);
 		panelSendMsg.add(btnSendMsg, BorderLayout.EAST);
 		
-		//========================================================================
-		//Button of reload the list of connected users
-		btnReloadListOfUsers = new JButton("Reload list of users");
-		btnReloadListOfUsers.setEnabled(false);
-		btnReloadListOfUsers.setToolTipText("Reload list of ussers");
-		btnReloadListOfUsers.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				askForListOfUsers();
-			}
-		});
-		panelSendMsg.add(btnReloadListOfUsers, BorderLayout.NORTH);
-		this.addWindowListener(this);
-		//========================================================================
-		
 		textAreaSendMsg = new JTextArea();
 		textAreaSendMsg.setTabSize(3);
 		textAreaSendMsg.setRows(4);
@@ -331,8 +317,6 @@ public class JFrameMainWindow extends JFrame implements Observer, WindowListener
 
 	@Override
 	public void update(Observable observable, Object object) {
-	}
-	private void askForListOfUsers(){
 	}
 
 	@Override
