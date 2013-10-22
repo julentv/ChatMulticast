@@ -7,7 +7,10 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
 
+import es.deusto.ingenieria.ssd.chat.multicast.client.MulticastClient;
+import es.deusto.ingenieria.ssd.chat.multicast.data.User;
 import es.deusto.ingenieria.ssd.chat.multicast.gui.JFrameMainWindow;
+
 
 public class Controller {
 	private  String ip;
@@ -16,6 +19,8 @@ public class Controller {
 	private InetAddress group;
 	private JFrameMainWindow window;
 	public MulticastSocket multicastSocket;
+	private User connectedUser;
+	private User chatReceiver;
 	//private static final String DEFAULT_MESSAGE = "Hello World!";
 	
 	//tiene a la ventana y el hilo
@@ -44,14 +49,13 @@ public class Controller {
 			byte[] buffer = new byte[1024];			
 			DatagramPacket messageIn = null;
 			
-			for (int i = 0; i < 3; i++) { // get messages from other 2 peers in the same group
+			
 				messageIn = new DatagramPacket(buffer, buffer.length);
 				multicastSocket.receive(messageIn);
 
 				System.out.println(" - Received a message from '" + messageIn.getAddress().getHostAddress() + ":" + messageIn.getPort() + 
 		                   		   "' -> " + new String(messageIn.getData()));
-			}
-			
+						
 			
 		} catch (SocketException e) {
 			System.err.println("# Socket Error: " + e.getMessage());
@@ -64,6 +68,11 @@ public class Controller {
 		this.multicastSocket= new MulticastSocket(port);
 		InetAddress group = InetAddress.getByName(ip);
 		multicastSocket.joinGroup(group);
+		this.connectedUser= new User(nick);
+		String message= "101&"+this.connectedUser.getNick();
+		sendDatagramPacket(message);
+		MulticastClient multicastClient = new MulticastClient(this);
+		multicastClient.start();
 		return true;
 	}
 }
