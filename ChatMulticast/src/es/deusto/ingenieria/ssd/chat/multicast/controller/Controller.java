@@ -36,6 +36,8 @@ public class Controller {
 		
 		
 	}
+	
+	
 	public void proccesInputMessage (String receivedMessage) throws IncorrectMessageException{
 		//el switch case con todos los mensajes aqui.
 		
@@ -43,7 +45,15 @@ public class Controller {
 		if (this.message.getTo()==null || this.message.getTo().getNick().equals(connectedUser.getNick())){
 			switch (message.getMessageType()){
 			case Message.CLIENT_MESSAGE_LOGIN:
-				//login
+				if (userList.getUserByNick(this.message.getFrom().getNick())==null){
+					//si no exist el ultimo de la lista envia la lista de usuarios
+				}
+				else{
+					//si hay nick ese usuario envia el sms de error 301
+				}
+				
+					
+					
 				break;
 			case Message.CLIENT_MESSAGE_ESTABLISH_CONNECTION:
 				//
