@@ -56,7 +56,7 @@ public class Controller {
 					
 				break;
 			case Message.CLIENT_MESSAGE_ESTABLISH_CONNECTION:
-				//
+				//si ya estoy hablando mandar already chatting
 				break;
 			case Message.CLIENT_MESSAGE_ACCEPT_INVITATION:
 				//
