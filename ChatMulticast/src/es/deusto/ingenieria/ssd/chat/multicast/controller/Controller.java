@@ -8,12 +8,15 @@ import java.net.MulticastSocket;
 import java.net.SocketException;
 
 import es.deusto.ingenieria.ssd.chat.multicast.client.MulticastClient;
+import es.deusto.ingenieria.ssd.chat.multicast.data.Message;
 import es.deusto.ingenieria.ssd.chat.multicast.data.User;
+import es.deusto.ingenieria.ssd.chat.multicast.data.UserList;
+import es.deusto.ingenieria.ssd.chat.multicast.exceptions.IncorrectMessageException;
 import es.deusto.ingenieria.ssd.chat.multicast.gui.JFrameMainWindow;
 
 
 public class Controller {
-	private  String ip;
+	public  String ip;
 	//private static final String DEFAULT_IP = "228.5.6.7";
 	private int port ;
 	private InetAddress group;
@@ -21,14 +24,54 @@ public class Controller {
 	public MulticastSocket multicastSocket;
 	private User connectedUser;
 	private User chatReceiver;
-	//private static final String DEFAULT_MESSAGE = "Hello World!";
+	private Message message;
+	private UserList userList;
 	
 	//tiene a la ventana y el hilo
 	public Controller(JFrameMainWindow jFrameMainWindow){
 		window=jFrameMainWindow;
 	}
-	public void proccesInputMessage (String message){
+	
+	private void generateMessage() throws IncorrectMessageException{
+		
+		
+	}
+	public void proccesInputMessage (String receivedMessage) throws IncorrectMessageException{
 		//el switch case con todos los mensajes aqui.
+		
+		generateMessage();
+		if (this.message.getTo()==null || this.message.getTo().getNick().equals(connectedUser.getNick())){
+			switch (message.getMessageType()){
+			case Message.CLIENT_MESSAGE_LOGIN:
+				//login
+				break;
+			case Message.CLIENT_MESSAGE_ESTABLISH_CONNECTION:
+				//
+				break;
+			case Message.CLIENT_MESSAGE_ACCEPT_INVITATION:
+				//
+				break;
+			case Message.CLIENT_MESSAGE_REJECT_INVITATION:
+				//
+				break;
+			case Message.CLIENT_MESSAGE_CLOSE_CONVERSATION:
+				//
+				break;
+			case Message.CLIENT_MESSAGE_CLOSE_CONNECTION:
+				//
+				break;
+			case Message.CLIENT_MESSAGE:
+				//
+				break;
+			case Message.CLIENT_MESSAGE_USER_LIST:
+				//lista de usuarios
+				break;
+			default:
+				throw new IncorrectMessageException("The message type code does not exist");
+			}
+		}
+		
+		
 	}
 	
 	private void sendDatagramPacket(String message){
@@ -45,27 +88,7 @@ public class Controller {
 			System.err.println("# IO Error: " + e.getMessage());
 		}
 	}
-	public void receiveDatagramPacket(){
-		try  {
-			group = InetAddress.getByName(ip);
-			
-			byte[] buffer = new byte[1024];			
-			DatagramPacket messageIn = null;
-			
-			
-				messageIn = new DatagramPacket(buffer, buffer.length);
-				multicastSocket.receive(messageIn);
-
-				System.out.println(" - Received a message from '" + messageIn.getAddress().getHostAddress() + ":" + messageIn.getPort() + 
-		                   		   "' -> " + new String(messageIn.getData()));
-						
-			
-		} catch (SocketException e) {
-			System.err.println("# Socket Error: " + e.getMessage());
-		} catch (IOException e) {
-			System.err.println("# IO Error: " + e.getMessage());
-		}
-	}
+	
 	
 	public boolean connect(String ip, int port, String nick) throws IOException{
 		this.multicastSocket= new MulticastSocket(port);

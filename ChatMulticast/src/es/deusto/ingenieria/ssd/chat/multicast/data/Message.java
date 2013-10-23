@@ -11,7 +11,7 @@ public class Message {
 	public static final int CLIENT_MESSAGE_REJECT_INVITATION=104;
 	public static final int CLIENT_MESSAGE_CLOSE_CONVERSATION=105;
 	public static final int CLIENT_MESSAGE_CLOSE_CONNECTION=106;
-	public static final int CLIENT_MESSAG=107;
+	public static final int CLIENT_MESSAGE=107;
 	public static final int CLIENT_MESSAGE_USER_LIST=108;
 	
 	//ERROR MESSAGES
