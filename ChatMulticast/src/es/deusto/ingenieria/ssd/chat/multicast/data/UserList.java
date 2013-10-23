@@ -10,6 +10,8 @@ public class UserList {
 	public UserList() {
 		listOfUsers=new ArrayList<User>();
 	}
+	
+	
 	/**
 	 * 
 	 * @param ip
@@ -22,6 +24,13 @@ public class UserList {
 //		return null;
 //	}
 	
+	public ArrayList<User> getListOfUsers() {
+		return listOfUsers;
+	}
+
+	public User getLastUser(){
+		return listOfUsers.get(listOfUsers.size()-1);
+	}
 	/**
 	 * 
 	 * @param nick
@@ -45,15 +54,15 @@ public class UserList {
 		}
 		return listOfNicks;
 	}
-//	public boolean deleteByIpAndPort(String ip, int port){
-//		for(User u:listOfUsers){
-//			if (u.getIp().equals(ip)&&u.getPort()==port){
-//				listOfUsers.remove(u);
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
+	public boolean deleteByNick(String nick){
+		for(User u:listOfUsers){
+			if (u.getNick().equals(nick)){
+				listOfUsers.remove(u);
+				return true;
+			}
+		}
+		return false;
+	}
 	public void add(User u){
 		this.listOfUsers.add(u);
 	}

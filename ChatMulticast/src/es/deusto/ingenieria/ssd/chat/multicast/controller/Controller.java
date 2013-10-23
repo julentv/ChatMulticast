@@ -1,11 +1,15 @@
 package es.deusto.ingenieria.ssd.chat.multicast.controller;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 import es.deusto.ingenieria.ssd.chat.multicast.client.MulticastClient;
 import es.deusto.ingenieria.ssd.chat.multicast.data.Message;
@@ -23,9 +27,10 @@ public class Controller {
 	private JFrameMainWindow window;
 	public MulticastSocket multicastSocket;
 	private User connectedUser;
-	private User chatReceiver;
+	public User chatReceiver;
 	private Message message;
 	private UserList userList;
+	private SimpleDateFormat textFormatter = new SimpleDateFormat("HH:mm:ss");
 	
 	//tiene a la ventana y el hilo
 	public Controller(JFrameMainWindow jFrameMainWindow){
@@ -37,49 +42,94 @@ public class Controller {
 		
 	}
 	
-	
+	public void sendMessage(String message){
+		sendDatagramPacket(message);
+	}
 	public void proccesInputMessage (String receivedMessage) throws IncorrectMessageException{
 		//el switch case con todos los mensajes aqui.
-		
+		String messageToSend;
+		String warningMessage;
+		String time;
 		generateMessage();
-		if (this.message.getTo()==null || this.message.getTo().getNick().equals(connectedUser.getNick())){
-			switch (message.getMessageType()){
-			case Message.CLIENT_MESSAGE_LOGIN:
-				if (userList.getUserByNick(this.message.getFrom().getNick())==null){
-					//si no exist el ultimo de la lista envia la lista de usuarios
-				}
-				else{
-					//si hay nick ese usuario envia el sms de error 301
-				}
+		
+		//Si el que envia el sms no soy yo mirar si el sms es para mi
+		if (!this.message.getFrom().getNick().equals(connectedUser.getNick())){
+			//si el sms es para mi procesar
+			if (this.message.getTo()==null || this.message.getTo().getNick().equals(connectedUser.getNick())){
 				
+				switch (message.getMessageType()){
+				
+				case Message.CLIENT_MESSAGE_LOGIN:
+					if (userList.getUserByNick(this.message.getFrom().getNick())==null){
+						//si no exist el ultimo de la lista envia la lista de usuarios
+						if (userList.getLastUser().getNick().equals(connectedUser.getNick())){
+							messageToSend="108"+userList.toString();
+							sendDatagramPacket(messageToSend);
+						}
+					}
+					else{
+						//si hay nick ese usuario envia el sms de error 301
+						if (this.message.getFrom().getNick().equals(connectedUser.getNick())){
+							messageToSend="301&"+this.connectedUser.getNick();
+							sendDatagramPacket(messageToSend);
+						}
+					}
+										
+						
+					break;
+				case Message.CLIENT_MESSAGE_ESTABLISH_CONNECTION:
+					//si ya estoy hablando mandar already chatting
+					if (this.chatReceiver!=null){
+						
+						boolean acceptInvitation= this.window.acceptChatInvitation(message.getFrom().getNick());
+						if (acceptInvitation){
+							this.chatReceiver= new User(message.getFrom().getNick());
+							messageToSend="103&"+this.connectedUser.getNick()+"&"+chatReceiver.getNick();
+							sendDatagramPacket(messageToSend);
+						}
+						else{
+							messageToSend="104&"+this.connectedUser.getNick()+"&"+chatReceiver.getNick();
+							sendDatagramPacket(messageToSend);
+						}
+					}
+					else{
+						messageToSend= "303&"+this.connectedUser.getNick()+"&"+message.getFrom().getNick();
+						sendDatagramPacket(messageToSend);
+											 
+					}
 					
-					
-				break;
-			case Message.CLIENT_MESSAGE_ESTABLISH_CONNECTION:
-				//si ya estoy hablando mandar already chatting
-				break;
-			case Message.CLIENT_MESSAGE_ACCEPT_INVITATION:
-				//
-				break;
-			case Message.CLIENT_MESSAGE_REJECT_INVITATION:
-				//
-				break;
-			case Message.CLIENT_MESSAGE_CLOSE_CONVERSATION:
-				//
-				break;
-			case Message.CLIENT_MESSAGE_CLOSE_CONNECTION:
-				//
-				break;
-			case Message.CLIENT_MESSAGE:
-				//
-				break;
-			case Message.CLIENT_MESSAGE_USER_LIST:
-				//lista de usuarios
-				break;
-			default:
-				throw new IncorrectMessageException("The message type code does not exist");
+					break;
+				case Message.CLIENT_MESSAGE_ACCEPT_INVITATION:
+					time = textFormatter.format(new Date());		
+					warningMessage = " " + time + ": BEGINING OF THE CONVERSATION WITH ["+this.chatReceiver.getNick()+"]\n";
+					this.window.appendMessageToHistory(warningMessage, Color.GREEN);
+					break;
+				case Message.CLIENT_MESSAGE_REJECT_INVITATION:
+					warningMessage= message.getFrom().getNick()+" has rejected your invitation";
+					this.window.showMessage(warningMessage);
+					break;
+				case Message.CLIENT_MESSAGE_CLOSE_CONVERSATION:
+					warningMessage= message.getFrom().getNick()+" has closed the conversation";
+					this.window.showMessage(warningMessage);
+					break;
+				case Message.CLIENT_MESSAGE_CLOSE_CONNECTION:
+					this.userList.deleteByNick(this.message.getFrom().getNick());
+					this.window.refreshUserList();
+					break;
+				case Message.CLIENT_MESSAGE:
+					 time = textFormatter.format(new Date());		
+					  warningMessage = " " + time + " - [" + this.message.getFrom() + "]: " + message.getText().trim() + "\n";
+					this.window.appendMessageToHistory(warningMessage, Color.MAGENTA);
+					break;
+				case Message.CLIENT_MESSAGE_USER_LIST:
+					//lista de usuarios
+					break;
+				default:
+					throw new IncorrectMessageException("The message type code does not exist");
+				}
 			}
 		}
+		
 		
 		
 	}

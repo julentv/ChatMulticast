@@ -51,8 +51,8 @@ public class JFrameMainWindow extends JFrame implements Observer, WindowListener
 	private JTextArea textAreaSendMsg;
 	private JButton btnSendMsg;
 	private JButton btnReloadListOfUsers;
-	private SimpleDateFormat textFormatter = new SimpleDateFormat("HH:mm:ss");
 	private Controller controller;
+	private SimpleDateFormat textFormatter = new SimpleDateFormat("HH:mm:ss");
 
 	/**
 	 * Create the frame.
@@ -221,7 +221,7 @@ public class JFrameMainWindow extends JFrame implements Observer, WindowListener
 	 * This method refresh the list of connected users
 	 * @param allUsers list of connected users separated by &
 	 */
-	public void refreshUserList(String allUsers){
+	public void refreshUserList(){
 		
 	}
 	
@@ -229,12 +229,10 @@ public class JFrameMainWindow extends JFrame implements Observer, WindowListener
 	private void btnConnectClick() {
 	}
 	
-	public void conversationRejected(){
+	public void showMessage(String message){
+		JOptionPane.showMessageDialog(this, message);
 	}
 	
-	public void existentNick(){
-		JOptionPane.showMessageDialog(this, "The nick is already used.");
-	}
 	
 	/**
 	 * THis method is responsible of changing elements state in the GUI
@@ -259,17 +257,7 @@ public class JFrameMainWindow extends JFrame implements Observer, WindowListener
 	
 	//The following methods corresponds to emergent window that notifies to the user
 	//about the chat state.
-	public void connectionFailed(){
-		JOptionPane.showMessageDialog(this, "Connection failed.");
-	}
 	
-	public void alreadyChatting(String nick){
-		JOptionPane.showMessageDialog(this, nick+" is already chatting.");
-	}
-	
-	public void disconnectedB(String nick){
-		JOptionPane.showMessageDialog(this, nick+" is disconnected.");
-	}
 	
 	public boolean acceptChatInvitation(String nick){
 		int result = JOptionPane.showConfirmDialog(this, "Do you want to start a new chat session with '" + nick + "'", "Open chat Session", JOptionPane.YES_NO_OPTION);
@@ -286,6 +274,24 @@ public class JFrameMainWindow extends JFrame implements Observer, WindowListener
 	}
 	
 	private void btnSendClick() {
+		if (!this.textAreaSendMsg.getText().trim().isEmpty()) {
+			
+			if (this.controller.chatReceiver==null) {				
+				JOptionPane.showMessageDialog(this, "No chat started", "Chat initialization error", JOptionPane.ERROR_MESSAGE);				
+				return;
+			}	
+			
+			String message = this.textAreaSendMsg.getText().trim();
+			
+			//message sent
+			controller.sendMessage("107&"+this.controller.chatReceiver.getNick()+"&"+message);
+			String time = textFormatter.format(new Date());		
+			String sentMessage = " " + time + ":  ["+this.controller.chatReceiver.getNick()+"]  " + message+"\n";
+			appendMessageToHistory(sentMessage, Color.GREEN);
+			
+			textAreaSendMsg.setText("");
+			
+		}
 	}
 	public void appendMessageToHistory(String message, Color color){
 		SimpleAttributeSet attrs = new SimpleAttributeSet();
