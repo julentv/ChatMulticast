@@ -149,6 +149,13 @@ public class Controller {
 		}
 	}
 	
+	public boolean isConnected() {
+		return this.connectedUser != null;
+	}
+	
+	public boolean isChatSessionOpened() {
+		return this.chatReceiver != null;
+	}
 	
 	public boolean connect(String ip, int port, String nick) throws IOException{
 		this.multicastSocket= new MulticastSocket(port);
@@ -161,4 +168,36 @@ public class Controller {
 		multicastClient.start();
 		return true;
 	}
+	
+public boolean disconnect() {
+		
+		String message;
+//		//ENTER YOUR CODE TO DISCONNECT
+		if (isChatSessionOpened()){
+			sendChatClosure();
+		}
+		
+		message= "106";
+		sendDatagramPacket(message);
+		
+		this.connectedUser = null;
+		this.chatReceiver = null;
+		
+		
+		return true;
+	}
+
+/**
+ * This method is used to send the message of closing the chat
+ * @return true
+ */
+public boolean sendChatClosure() {
+	
+	//ENTER YOUR CODE TO SEND A CHAT CLOSURE
+	String message="105&"+this.chatReceiver.getNick();
+	sendDatagramPacket(message);
+	this.chatReceiver = null;
+	
+	return true;
+}
 }

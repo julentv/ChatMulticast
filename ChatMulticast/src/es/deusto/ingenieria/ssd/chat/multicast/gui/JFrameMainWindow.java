@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Observable;
@@ -120,7 +121,7 @@ public class JFrameMainWindow extends JFrame implements Observer, WindowListener
 		
 		txtFieldServerIP = new JTextField();
 		txtFieldServerIP.setColumns(10);
-		txtFieldServerIP.setText("127.0.0.1");
+		txtFieldServerIP.setText("228.5.6.7");
 		txtFieldServerPort = new JTextField();
 		txtFieldServerPort.setColumns(10);
 		txtFieldServerPort.setText("6789");
@@ -227,6 +228,48 @@ public class JFrameMainWindow extends JFrame implements Observer, WindowListener
 	
 	
 	private void btnConnectClick() {
+		
+		if (!this.controller.isConnected()) {
+			if (this.txtFieldServerIP.getText().trim().isEmpty() ||
+					this.txtFieldServerIP.getText().trim().isEmpty() ||
+					this.txtFieldNick.getText().trim().isEmpty() ) {				
+					JOptionPane.showMessageDialog(this, "Some connection parameters are empty", "Connection initializarion error", JOptionPane.ERROR_MESSAGE);				
+					
+					
+				}else{
+			this.txtFieldServerIP.setEditable(false);
+			this.txtFieldServerPort.setEditable(false);
+			this.txtFieldNick.setEditable(false);
+			this.btnConnect.setText("Disconnect");
+			this.btnSendMsg.setEnabled(true);
+			//this.btnReloadListOfUsers.setEnabled(true);
+			this.textAreaHistory.setText("");
+			this.textAreaSendMsg.setText("");
+			return;
+				}
+		}else {
+			
+			//Disconnect from the server
+			if (this.controller.disconnect()) {
+//				this.txtFieldServerIP.setEditable(true);
+//				this.txtFieldServerPort.setEditable(true);
+//				this.txtFieldNick.setEditable(true);
+//				this.listUsers.setEnabled(true);
+//				this.listUsers.clearSelection();
+//				((DefaultListModel)this.listUsers.getModel()).removeAllElements();
+//				this.btnConnect.setText("Connect");
+//				this.btnSendMsg.setEnabled(false);
+//				//this.btnReloadListOfUsers.setEnabled(false);
+//				this.textAreaHistory.setText("");
+//				this.textAreaSendMsg.setText("");
+//				this.setTitle("Chat main window - 'Disconnected'");
+//				JOptionPane.showMessageDialog(this, "Disconnection successful.");
+			} else {
+				JOptionPane.showMessageDialog(this, "Disconnection from the server fails.", "Disconnection error", JOptionPane.ERROR_MESSAGE);				
+			}
+		}
+			
+		
 	}
 	
 	public void showMessage(String message){
