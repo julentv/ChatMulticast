@@ -75,6 +75,7 @@ public class Controller {
 		
 		//Si el que envia el sms no soy yo mirar si el sms es para mi
 		if (!this.message.getFrom().getNick().equals(connectedUser.getNick())){
+			System.out.println();
 			//si el sms es para mi procesar
 			if (this.message.getTo()==null || this.message.getTo().getNick().equals(connectedUser.getNick())){
 				
@@ -156,7 +157,8 @@ public class Controller {
 	
 	private void sendDatagramPacket(String message){
 		try  {
-											
+				
+				
 			DatagramPacket messageOut = new DatagramPacket(message.getBytes(), message.length(), group, port);
 			multicastSocket.send(messageOut);
 			System.out.println(" - Sent a message to '" + messageOut.getAddress().getHostAddress() + ":" + messageOut.getPort() + 
@@ -179,9 +181,11 @@ public class Controller {
 	
 	public boolean connect(String ip, int port, String nick) throws IOException{
 		this.multicastSocket= new MulticastSocket(port);
-		InetAddress group = InetAddress.getByName(ip);
+		this.group = InetAddress.getByName(ip);
 		multicastSocket.joinGroup(group);
+		userList= new UserList();
 		this.connectedUser= new User(nick);
+		userList.add(connectedUser);
 		String message= "101&"+this.connectedUser.getNick();
 		sendDatagramPacket(message);
 		MulticastClient multicastClient = new MulticastClient(this);
@@ -206,6 +210,8 @@ public boolean disconnect() {
 		
 		return true;
 	}
+
+
 
 /**
  * This method is used to send the message of closing the chat

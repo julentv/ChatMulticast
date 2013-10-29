@@ -235,24 +235,36 @@ public class JFrameMainWindow extends JFrame implements Observer, WindowListener
 	}
 	
 	
-	private void btnConnectClick() {
+	private void btnConnectClick()  {
 		
 		if (!this.controller.isConnected()) {
 			if (this.txtFieldServerIP.getText().trim().isEmpty() ||
-					this.txtFieldServerIP.getText().trim().isEmpty() ||
+					this.txtFieldServerPort.getText().trim().isEmpty() ||
 					this.txtFieldNick.getText().trim().isEmpty() ) {				
 					JOptionPane.showMessageDialog(this, "Some connection parameters are empty", "Connection initializarion error", JOptionPane.ERROR_MESSAGE);				
 					
 					
 				}else{
-			this.txtFieldServerIP.setEditable(false);
-			this.txtFieldServerPort.setEditable(false);
-			this.txtFieldNick.setEditable(false);
-			this.btnConnect.setText("Disconnect");
-			this.btnSendMsg.setEnabled(true);
-			//this.btnReloadListOfUsers.setEnabled(true);
-			this.textAreaHistory.setText("");
-			this.textAreaSendMsg.setText("");
+			
+			
+			try {
+				int port= Integer.valueOf(txtFieldServerPort.getText());
+				this.txtFieldServerIP.setEditable(false);
+				this.txtFieldServerPort.setEditable(false);
+				this.txtFieldNick.setEditable(false);
+				this.btnConnect.setText("Disconnect");
+				this.btnSendMsg.setEnabled(true);
+				//this.btnReloadListOfUsers.setEnabled(true);
+				this.textAreaHistory.setText("");
+				this.textAreaSendMsg.setText("");
+				this.controller.connect(this.txtFieldServerIP.getText(), port, txtFieldNick.getText());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				JOptionPane.showMessageDialog(this, "Connection error", "Connection error", JOptionPane.ERROR_MESSAGE);
+			} catch (NumberFormatException nfe){
+				nfe.printStackTrace();
+				JOptionPane.showMessageDialog(this, "Server port must be an integer", "Server port error", JOptionPane.ERROR_MESSAGE);
+			}
 			return;
 				}
 		}else {

@@ -46,6 +46,7 @@ public class MulticastClient extends Thread {
 	@Override
 	public void run(){
 		DatagramPacket receivedPacket= receiveDatagramPacket();
+		System.out.println("aaaaaa");
 		String receivedMessage= new String(receivedPacket.getData());
 		receivedMessage= receivedMessage.trim();
 				
