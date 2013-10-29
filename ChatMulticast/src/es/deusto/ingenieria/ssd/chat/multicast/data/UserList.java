@@ -17,7 +17,6 @@ public class UserList {
 		String[] arrUsers = users.split("&");
 		if (arrUsers.length!=0) {
 			for (String user : arrUsers) {
-				
 				listOfUsers.add(new User(user));
 			}
 		}

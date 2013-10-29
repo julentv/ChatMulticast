@@ -58,9 +58,22 @@ public class Controller {
 	}
 
 
-	private void generateMessage() throws IncorrectMessageException{
-		
-		
+	private void generateMessage(String mess) throws IncorrectMessageException{
+		String []arrMessage=mess.split("&");
+		this.message= new Message();
+		this.message.setFrom(this.userList.getUserByNick(arrMessage[1]));
+		if(this.message.getFrom()==null)
+			this.message.setFrom(new User(arrMessage[1]));
+		this.message.setMessageType(Integer.valueOf(arrMessage[0]));
+		if(this.message.hasUserTo()){
+			this.message.setTo(this.userList.getUserByNick(arrMessage[2]));
+			
+			if(arrMessage.length>3)
+				this.message.setText(mess.substring(arrMessage[0].length()+arrMessage[1].length()+arrMessage[2].length()+2));
+		}else{
+			if(arrMessage.length>2)
+			this.message.setText(mess.substring(arrMessage[0].length()+arrMessage[1].length()+1));
+		}
 	}
 	
 	public void sendMessage(String message){
@@ -71,11 +84,12 @@ public class Controller {
 		String messageToSend;
 		String warningMessage;
 		String time;
-		generateMessage();
+		generateMessage(receivedMessage);
 		
 		//Si el que envia el sms no soy yo mirar si el sms es para mi
-		if (!this.message.getFrom().getNick().equals(connectedUser.getNick())){
-			System.out.println();
+		System.out.println("soy yo: "+!this.message.getFrom().getNick().equals(connectedUser.getNick()));
+		if (this.message.isLogginMessage() ||(!this.message.isLogginMessage() && !this.message.getFrom().getNick().equals(connectedUser.getNick()))){
+			
 			//si el sms es para mi procesar
 			if (this.message.getTo()==null || this.message.getTo().getNick().equals(connectedUser.getNick())){
 				
@@ -84,14 +98,21 @@ public class Controller {
 				case Message.CLIENT_MESSAGE_LOGIN:
 					if (userList.getUserByNick(this.message.getFrom().getNick())==null){
 						//si no exist el ultimo de la lista envia la lista de usuarios
+						
 						if (userList.getLastUser().getNick().equals(connectedUser.getNick())){
-							messageToSend="108"+userList.toString();
+							this.userList.add(this.message.getFrom());
+							messageToSend="108&"+this.connectedUser.getNick()+userList.toString();
 							sendDatagramPacket(messageToSend);
+						}else{
+							this.userList.add(this.message.getFrom());
 						}
+						this.window.refreshUserList();
+						
 					}
 					else{
 						//si hay nick ese usuario envia el sms de error 301
 						if (this.message.getFrom().getNick().equals(connectedUser.getNick())){
+							
 							messageToSend="301&"+this.connectedUser.getNick();
 							sendDatagramPacket(messageToSend);
 						}
@@ -157,8 +178,6 @@ public class Controller {
 	
 	private void sendDatagramPacket(String message){
 		try  {
-				
-				
 			DatagramPacket messageOut = new DatagramPacket(message.getBytes(), message.length(), group, port);
 			multicastSocket.send(messageOut);
 			System.out.println(" - Sent a message to '" + messageOut.getAddress().getHostAddress() + ":" + messageOut.getPort() + 
@@ -180,6 +199,7 @@ public class Controller {
 	}
 	
 	public boolean connect(String ip, int port, String nick) throws IOException{
+		this.port=port;
 		this.multicastSocket= new MulticastSocket(port);
 		this.group = InetAddress.getByName(ip);
 		multicastSocket.joinGroup(group);

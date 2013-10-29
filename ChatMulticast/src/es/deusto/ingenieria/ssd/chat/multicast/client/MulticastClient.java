@@ -6,14 +6,13 @@ import java.net.InetAddress;
 import java.net.SocketException;
 
 import es.deusto.ingenieria.ssd.chat.multicast.controller.Controller;
-import es.deusto.ingenieria.ssd.chat.multicast.data.Message;
+import es.deusto.ingenieria.ssd.chat.multicast.exceptions.IncorrectMessageException;
 
 
 
 public class MulticastClient extends Thread {
 	
 	private Controller controller;
-	private InetAddress group;
 	
 	public MulticastClient(Controller controller){
 		this.controller=controller;
@@ -21,18 +20,11 @@ public class MulticastClient extends Thread {
 	
 	public DatagramPacket receiveDatagramPacket(){
 		try  {
-			group = InetAddress.getByName(controller.ip);
-			
 			byte[] buffer = new byte[1024];			
-			DatagramPacket messageIn = null;
-			
-			
-				messageIn = new DatagramPacket(buffer, buffer.length);
-				controller.multicastSocket.receive(messageIn);
-
-				System.out.println(" - Received a message from '" + messageIn.getAddress().getHostAddress() + ":" + messageIn.getPort() + 
+			DatagramPacket messageIn =new DatagramPacket(buffer, buffer.length);
+			controller.multicastSocket.receive(messageIn);
+			System.out.println(" - Received a message from '" + messageIn.getAddress().getHostAddress() + ":" + messageIn.getPort() + 
 		                   		   "' -> " + new String(messageIn.getData()));
-						
 			return messageIn;
 		} catch (SocketException e) {
 			System.err.println("# Socket Error: " + e.getMessage());
@@ -45,16 +37,22 @@ public class MulticastClient extends Thread {
 	
 	@Override
 	public void run(){
-		DatagramPacket receivedPacket= receiveDatagramPacket();
-		System.out.println("aaaaaa");
-		String receivedMessage= new String(receivedPacket.getData());
-		receivedMessage= receivedMessage.trim();
-				
-		
-			
+		while(true){
+			DatagramPacket receivedPacket= receiveDatagramPacket();
+			String receivedMessage= new String(receivedPacket.getData());
+			receivedMessage= receivedMessage.trim();
+			try {
+				controller.proccesInputMessage(receivedMessage);
+			} catch (IncorrectMessageException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
 		}
 			
 		
+			
 	}
+			
+}
 
 
