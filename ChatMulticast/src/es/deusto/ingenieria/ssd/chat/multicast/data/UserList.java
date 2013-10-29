@@ -2,6 +2,8 @@ package es.deusto.ingenieria.ssd.chat.multicast.data;
 
 import java.util.ArrayList;
 
+import javax.swing.DefaultListModel;
+
 import es.deusto.ingenieria.ssd.chat.multicast.data.User;
 
 public class UserList {
@@ -10,19 +12,16 @@ public class UserList {
 	public UserList() {
 		listOfUsers=new ArrayList<User>();
 	}
-	
-	
-	/**
-	 * 
-	 * @param ip
-	 * @return the user if exists null if not.
-	 */
-//	public User getUserByIpAndPort (String ip, int port){
-//		for(User u:listOfUsers){
-//			if(u.getIp().equals(ip)&&u.getPort()==port) return u;
-//		}
-//		return null;
-//	}
+	public void fromString(String users){
+		listOfUsers=new ArrayList<User>();
+		String[] arrUsers = users.split("&");
+		if (arrUsers.length!=0) {
+			for (String user : arrUsers) {
+				
+				listOfUsers.add(new User(user));
+			}
+		}
+	}
 	
 	public ArrayList<User> getListOfUsers() {
 		return listOfUsers;

@@ -37,6 +37,27 @@ public class Controller {
 		window=jFrameMainWindow;
 	}
 	
+	
+	public User getConnectedUser() {
+		return connectedUser;
+	}
+
+
+	public void setConnectedUser(User connectedUser) {
+		this.connectedUser = connectedUser;
+	}
+
+	
+	public UserList getUserList() {
+		return userList;
+	}
+
+
+	public void setUserList(UserList userList) {
+		this.userList = userList;
+	}
+
+
 	private void generateMessage() throws IncorrectMessageException{
 		
 		
@@ -122,15 +143,14 @@ public class Controller {
 					this.window.appendMessageToHistory(warningMessage, Color.MAGENTA);
 					break;
 				case Message.CLIENT_MESSAGE_USER_LIST:
-					//lista de usuarios
+					this.userList.fromString(this.message.getText());
+					this.window.refreshUserList();
 					break;
 				default:
 					throw new IncorrectMessageException("The message type code does not exist");
 				}
 			}
 		}
-		
-		
 		
 	}
 	

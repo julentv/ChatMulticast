@@ -11,6 +11,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
@@ -38,6 +39,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
 import es.deusto.ingenieria.ssd.chat.multicast.controller.Controller;
+import es.deusto.ingenieria.ssd.chat.multicast.data.User;
 
 public class JFrameMainWindow extends JFrame implements Observer, WindowListener{
 
@@ -223,7 +225,13 @@ public class JFrameMainWindow extends JFrame implements Observer, WindowListener
 	 * @param allUsers list of connected users separated by &
 	 */
 	public void refreshUserList(){
-		
+		ArrayList<User> userList=this.controller.getUserList().getListOfUsers();
+		DefaultListModel<String> listModel = new DefaultListModel<>();
+		for(User u:userList){
+			if(!u.getNick().equals(controller.getConnectedUser()))
+				listModel.addElement(u.getNick());
+		}
+		this.listUsers.setModel(listModel);
 	}
 	
 	
