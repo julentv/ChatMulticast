@@ -27,7 +27,6 @@ public class MulticastClient extends Thread {
 			
 			
 				messageIn = new DatagramPacket(buffer, buffer.length);
-				System.out.println(messageIn.getAddress().getHostAddress());
 				controller.multicastSocket.receive(messageIn);
 				
 				System.out.println(" - Received a message from '" + messageIn.getAddress().getHostAddress() + ":" + messageIn.getPort() + 
