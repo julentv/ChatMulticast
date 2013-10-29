@@ -75,7 +75,8 @@ public class Controller {
 		
 		//Si el que envia el sms no soy yo mirar si el sms es para mi
 		if (!this.message.getFrom().getNick().equals(connectedUser.getNick())){
-			System.out.println();
+			System.out.println("from"+this.message.getFrom().getNick());
+			System.out.println("connected"+connectedUser.getNick());
 			//si el sms es para mi procesar
 			if (this.message.getTo()==null || this.message.getTo().getNick().equals(connectedUser.getNick())){
 				

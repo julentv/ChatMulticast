@@ -21,15 +21,15 @@ public class MulticastClient extends Thread {
 	
 	public DatagramPacket receiveDatagramPacket(){
 		try  {
-			group = InetAddress.getByName(controller.ip);
 			
 			byte[] buffer = new byte[1024];			
 			DatagramPacket messageIn = null;
 			
 			
 				messageIn = new DatagramPacket(buffer, buffer.length);
+				System.out.println(messageIn.getAddress().getHostAddress());
 				controller.multicastSocket.receive(messageIn);
-
+				
 				System.out.println(" - Received a message from '" + messageIn.getAddress().getHostAddress() + ":" + messageIn.getPort() + 
 		                   		   "' -> " + new String(messageIn.getData()));
 						
