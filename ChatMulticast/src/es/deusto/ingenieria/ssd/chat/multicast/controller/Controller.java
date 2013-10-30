@@ -142,12 +142,13 @@ public class Controller {
 
 							break;
 						case Message.CLIENT_MESSAGE_ESTABLISH_CONNECTION:
-							// si ya estoy hablando mandar already chatting
-							if (this.chatReceiver != null) {
+							
+							if (this.chatReceiver == null) {
+								String messageToConnect="Do you want to start a new chat session with '" + message.getFrom()
+										.getNick() + "'";
 
 								boolean acceptInvitation = this.window
-										.acceptChatInvitation(message.getFrom()
-												.getNick());
+										.acceptWindow(messageToConnect, "Open chat session");
 								if (acceptInvitation) {
 									this.chatReceiver = new User(message
 											.getFrom().getNick());
@@ -155,6 +156,13 @@ public class Controller {
 											+ this.connectedUser.getNick()
 											+ "&" + chatReceiver.getNick();
 									sendDatagramPacket(messageToSend);
+									time = textFormatter.format(new Date());
+									warningMessage = " " + time
+											+ ": BEGINING OF THE CONVERSATION WITH ["
+											+ this.chatReceiver.getNick() + "]\n";
+									this.window.appendMessageToHistory(warningMessage,
+											Color.GREEN);
+									
 								} else {
 									messageToSend = "104&"
 											+ this.connectedUser.getNick()
@@ -162,6 +170,7 @@ public class Controller {
 									sendDatagramPacket(messageToSend);
 								}
 							} else {
+								// si ya estoy hablando mandar already chatting
 								messageToSend = "303&"
 										+ this.connectedUser.getNick() + "&"
 										+ message.getFrom().getNick();
@@ -171,6 +180,7 @@ public class Controller {
 
 							break;
 						case Message.CLIENT_MESSAGE_ACCEPT_INVITATION:
+							this.chatReceiver=this.message.getFrom();
 							time = textFormatter.format(new Date());
 							warningMessage = " " + time
 									+ ": BEGINING OF THE CONVERSATION WITH ["
@@ -184,9 +194,10 @@ public class Controller {
 							this.window.showMessage(warningMessage);
 							break;
 						case Message.CLIENT_MESSAGE_CLOSE_CONVERSATION:
-							warningMessage = message.getFrom().getNick()
-									+ " has closed the conversation";
-							this.window.showMessage(warningMessage);
+							time = textFormatter.format(new Date());		
+							warningMessage = " " + time + ": CONVERSATION FINISHED\n";
+							this.window.appendMessageToHistory(warningMessage, Color.GREEN);
+							this.chatReceiver=null;
 							break;
 						case Message.CLIENT_MESSAGE_CLOSE_CONNECTION:
 							this.userList.deleteByNick(this.message.getFrom()
@@ -299,5 +310,25 @@ public class Controller {
 		this.chatReceiver = null;
 
 		return true;
+	}
+
+	public void establishConnection(String nickToConnect){
+		if(this.chatReceiver==null){
+			String message="102&"+this.getConnectedUser().getNick()+"&"+nickToConnect;
+			sendDatagramPacket(message);
+		}else{
+			String messageToReject="Do you want to close the conversation?";
+			boolean close=this.window.acceptWindow(messageToReject, "Close chat session");
+			if(close){
+				String message="105&"+this.getConnectedUser().getNick()+"&"+nickToConnect;
+				sendDatagramPacket(message);
+				this.window.listUsers.clearSelection();
+				String time = textFormatter.format(new Date());		
+				message = " " + time + ": CONVERSATION FINISHED\n";
+				this.window.appendMessageToHistory(message, Color.GREEN);
+				this.chatReceiver=null;
+				this.window.setTitle("Chat main window - 'Connected'");
+			}
+		}
 	}
 }

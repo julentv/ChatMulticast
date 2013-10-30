@@ -49,7 +49,7 @@ public class JFrameMainWindow extends JFrame implements Observer, WindowListener
 	private JTextField txtFieldServerPort;
 	private JTextField txtFieldNick;
 	private JButton btnConnect;
-	private JList<String> listUsers;
+	public JList<String> listUsers;
 	private JTextPane textAreaHistory;
 	private JTextArea textAreaSendMsg;
 	private JButton btnSendMsg;
@@ -325,18 +325,21 @@ public class JFrameMainWindow extends JFrame implements Observer, WindowListener
 	//about the chat state.
 	
 	
-	public boolean acceptChatInvitation(String nick){
-		int result = JOptionPane.showConfirmDialog(this, "Do you want to start a new chat session with '" + nick + "'", "Open chat Session", JOptionPane.YES_NO_OPTION);
-	if (result==JOptionPane.OK_OPTION){
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	public boolean acceptWindow(String message, String title){
+		int result = JOptionPane.showConfirmDialog(this, message, title, JOptionPane.YES_NO_OPTION);
+		if (result==JOptionPane.OK_OPTION){
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	
 	}
 	private void selectUser() {
+		this.controller.establishConnection(this.listUsers.getSelectedValue());
+		
+		
 	}
 	
 	private void btnSendClick() {
