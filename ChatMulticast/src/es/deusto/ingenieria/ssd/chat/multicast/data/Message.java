@@ -102,4 +102,10 @@ public class Message {
 		else
 			return false;
 	}
+	public boolean isNickAlreadyExistMessage(){
+		if (this.messageType==Message.ERROR_MESSAGE_EXISTING_NICK)
+			return true;
+		else
+			return false;
+	}
 }

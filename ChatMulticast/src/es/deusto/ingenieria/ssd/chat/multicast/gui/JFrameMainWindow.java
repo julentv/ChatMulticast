@@ -303,6 +303,10 @@ public class JFrameMainWindow extends JFrame implements Observer, WindowListener
 	 */
 	@SuppressWarnings("rawtypes")
 	public void disconnectionSuccessful(){
+		toDisconnectionMode();
+		JOptionPane.showMessageDialog(this, "Disconnection successful.");
+	}
+	public void toDisconnectionMode(){
 		this.txtFieldServerIP.setEditable(true);
 		this.txtFieldServerPort.setEditable(true);
 		this.txtFieldNick.setEditable(true);
@@ -315,7 +319,6 @@ public class JFrameMainWindow extends JFrame implements Observer, WindowListener
 		this.textAreaHistory.setText("");
 		this.textAreaSendMsg.setText("");
 		this.setTitle("Chat main window - 'Disconnected'");
-		JOptionPane.showMessageDialog(this, "Disconnection successful.");
 	}
 	
 	//The following methods corresponds to emergent window that notifies to the user
