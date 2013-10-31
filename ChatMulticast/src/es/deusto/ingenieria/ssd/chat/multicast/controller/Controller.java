@@ -25,7 +25,7 @@ public class Controller {
 	private InetAddress group;
 	private JFrameMainWindow window;
 	public MulticastSocket multicastSocket;
-	private User connectedUser;
+	public User connectedUser;
 	public User chatReceiver;
 	private Message message;
 	private UserList userList;
@@ -166,7 +166,8 @@ public class Controller {
 								} else {
 									messageToSend = "104&"
 											+ this.connectedUser.getNick()
-											+ "&" + chatReceiver.getNick();
+											+ "&" + message
+											.getFrom().getNick();
 									sendDatagramPacket(messageToSend);
 								}
 							} else {
@@ -197,6 +198,7 @@ public class Controller {
 							time = textFormatter.format(new Date());		
 							warningMessage = " " + time + ": CONVERSATION FINISHED\n";
 							this.window.appendMessageToHistory(warningMessage, Color.GREEN);
+							this.window.listUsers.clearSelection();
 							this.chatReceiver=null;
 							break;
 						case Message.CLIENT_MESSAGE_CLOSE_CONNECTION:
@@ -289,7 +291,7 @@ public class Controller {
 		if (isChatSessionOpened()) {
 			sendChatClosure();
 		}
-		message = "106";
+		message = "106&"+this.connectedUser.getNick();
 		sendDatagramPacket(message);
 		this.connectedUser = null;
 		this.chatReceiver = null;

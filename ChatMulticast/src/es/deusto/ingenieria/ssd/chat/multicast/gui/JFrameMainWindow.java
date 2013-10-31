@@ -271,6 +271,7 @@ public class JFrameMainWindow extends JFrame implements Observer, WindowListener
 			
 			//Disconnect from the server
 			if (this.controller.disconnect()) {
+				disconnectionSuccessful();
 //				this.txtFieldServerIP.setEditable(true);
 //				this.txtFieldServerPort.setEditable(true);
 //				this.txtFieldNick.setEditable(true);
@@ -315,7 +316,6 @@ public class JFrameMainWindow extends JFrame implements Observer, WindowListener
 		((DefaultListModel)this.listUsers.getModel()).removeAllElements();
 		this.btnConnect.setText("Connect");
 		this.btnSendMsg.setEnabled(false);
-		this.btnReloadListOfUsers.setEnabled(false);
 		this.textAreaHistory.setText("");
 		this.textAreaSendMsg.setText("");
 		this.setTitle("Chat main window - 'Disconnected'");
@@ -353,10 +353,10 @@ public class JFrameMainWindow extends JFrame implements Observer, WindowListener
 			String message = this.textAreaSendMsg.getText().trim();
 			
 			//message sent
-			controller.sendMessage("107&"+this.controller.chatReceiver.getNick()+"&"+message);
+			controller.sendMessage("107&"+this.controller.connectedUser.getNick()+"&"+this.controller.chatReceiver.getNick()+"&"+message);
 			String time = textFormatter.format(new Date());		
 			String sentMessage = " " + time + ":  ["+this.controller.chatReceiver.getNick()+"]  " + message+"\n";
-			appendMessageToHistory(sentMessage, Color.GREEN);
+			appendMessageToHistory(sentMessage, Color.BLUE);
 			
 			textAreaSendMsg.setText("");
 			
