@@ -71,11 +71,11 @@ public class Controller {
 
 			if (arrMessage.length > 3)
 				this.message.setText(mess.substring(arrMessage[0].length()
-						+ arrMessage[1].length() + arrMessage[2].length() + 2));
+						+ arrMessage[1].length() + arrMessage[2].length() + 3));
 		} else {
 			if (arrMessage.length > 2)
 				this.message.setText(mess.substring(arrMessage[0].length()
-						+ arrMessage[1].length() + 1));
+						+ arrMessage[1].length() + 2));
 		}
 	}
 
@@ -209,7 +209,7 @@ public class Controller {
 						case Message.CLIENT_MESSAGE:
 							time = textFormatter.format(new Date());
 							warningMessage = " " + time + " - ["
-									+ this.message.getFrom() + "]: "
+									+ this.message.getFrom().getNick() + "]: "
 									+ message.getText().trim() + "\n";
 							this.window.appendMessageToHistory(warningMessage,
 									Color.MAGENTA);
@@ -227,6 +227,9 @@ public class Controller {
 							this.window.toDisconnectionMode();
 							this.multicastSocket.close();
 							break;
+						case Message.ERROR_MESSAGE_USER_ALREADY_CHATTING:
+							this.window
+							.showMessage(message.getFrom().getNick()+" is already chatting.");
 						default:
 							throw new IncorrectMessageException(
 									"The message type code does not exist");
@@ -307,7 +310,7 @@ public class Controller {
 	public boolean sendChatClosure() {
 
 		// ENTER YOUR CODE TO SEND A CHAT CLOSURE
-		String message = "105&" + this.chatReceiver.getNick();
+		String message = "105&" + this.connectedUser.getNick()+"&"+this.chatReceiver.getNick();
 		sendDatagramPacket(message);
 		this.chatReceiver = null;
 

@@ -355,7 +355,7 @@ public class JFrameMainWindow extends JFrame implements Observer, WindowListener
 			//message sent
 			controller.sendMessage("107&"+this.controller.connectedUser.getNick()+"&"+this.controller.chatReceiver.getNick()+"&"+message);
 			String time = textFormatter.format(new Date());		
-			String sentMessage = " " + time + ":  ["+this.controller.chatReceiver.getNick()+"]  " + message+"\n";
+			String sentMessage = " " + time + ":  ["+this.controller.connectedUser.getNick()+"]  " + message+"\n";
 			appendMessageToHistory(sentMessage, Color.BLUE);
 			
 			textAreaSendMsg.setText("");
