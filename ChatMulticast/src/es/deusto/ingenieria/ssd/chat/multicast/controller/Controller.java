@@ -219,15 +219,19 @@ public class Controller {
 							this.window.refreshUserList();
 							break;
 						case Message.ERROR_MESSAGE_EXISTING_NICK:
-							this.window
-									.showMessage("The introduced nick already exists");
-							this.connectedUser = null;
-							this.userList = new UserList();
-							this.window.refreshUserList();
-							this.window.toDisconnectionMode();
-							this.multicastSocket.close();
+							if(message.getFrom().getNick().equals(this.connectedUser.getNick())){
+								this.window
+								.showMessage("The introduced nick already exists");
+						this.connectedUser = null;
+						this.userList = new UserList();
+						this.window.refreshUserList();
+						this.window.toDisconnectionMode();
+						this.multicastSocket.close();
+							}
+							
 							break;
 						case Message.ERROR_MESSAGE_USER_ALREADY_CHATTING:
+							
 							this.window
 							.showMessage(message.getFrom().getNick()+" is already chatting.");
 						default:
@@ -326,7 +330,7 @@ public class Controller {
 			String messageToReject="Do you want to close the conversation?";
 			boolean close=this.window.acceptWindow(messageToReject, "Close chat session");
 			if(close){
-				String message="105&"+this.getConnectedUser().getNick()+"&"+nickToConnect;
+				String message="105&"+this.getConnectedUser().getNick()+"&"+this.chatReceiver.getNick();
 				sendDatagramPacket(message);
 				this.window.listUsers.clearSelection();
 				String time = textFormatter.format(new Date());		
