@@ -313,7 +313,11 @@ public class JFrameMainWindow extends JFrame implements Observer, WindowListener
 		this.txtFieldNick.setEditable(true);
 		this.listUsers.setEnabled(true);
 		this.listUsers.clearSelection();
-		((DefaultListModel)this.listUsers.getModel()).removeAllElements();
+		if (this.listUsers.getModel().getSize()!=0){
+			((DefaultListModel)this.listUsers.getModel()).removeAllElements();
+		}
+		
+		
 		this.btnConnect.setText("Connect");
 		this.btnSendMsg.setEnabled(false);
 		this.textAreaHistory.setText("");

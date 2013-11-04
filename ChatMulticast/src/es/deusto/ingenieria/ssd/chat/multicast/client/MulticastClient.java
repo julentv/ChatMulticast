@@ -38,15 +38,19 @@ public class MulticastClient extends Thread {
 	@Override
 	public void run(){
 		while(true){
+			try {
 			DatagramPacket receivedPacket= receiveDatagramPacket();
 			String receivedMessage= new String(receivedPacket.getData());
 			receivedMessage= receivedMessage.trim();
-			try {
+			
 				controller.proccesInputMessage(receivedMessage);
 			} catch (IncorrectMessageException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}	
+			}	catch (NullPointerException np){
+				System.out.println("Thread is stopped because the socket is stopped.");
+				break;
+			}
 		}
 			
 		

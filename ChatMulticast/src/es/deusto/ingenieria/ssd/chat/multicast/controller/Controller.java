@@ -96,10 +96,10 @@ public class Controller {
 			if (!(this.alreadyExistsSent && this.message.isNickAlreadyExistMessage())) {
 				boolean logginOrExisting=this.message.isLogginMessage()||this.message.isNickAlreadyExistMessage();
 				if (logginOrExisting
-						|| (!logginOrExisting && !this.message
+						|| (!logginOrExisting && connectedUser!=null&& !this.message
 								.getFrom().getNick()
 								.equals(connectedUser.getNick()))) {
-					System.out.println("second if");
+					
 
 					// si el sms es para mi procesar
 					if (this.message.getTo() == null
@@ -296,9 +296,10 @@ public class Controller {
 		}
 		message = "106&"+this.connectedUser.getNick();
 		sendDatagramPacket(message);
+		this.multicastSocket.close();
 		this.connectedUser = null;
 		this.chatReceiver = null;
-		this.multicastSocket.close();
+		
 		return true;
 	}
 
