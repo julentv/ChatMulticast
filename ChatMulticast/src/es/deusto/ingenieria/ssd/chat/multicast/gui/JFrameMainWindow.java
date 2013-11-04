@@ -214,7 +214,7 @@ public class JFrameMainWindow extends JFrame implements Observer, WindowListener
 		textAreaSendMsg.setTabSize(3);
 		textAreaSendMsg.setRows(4);
 		textAreaSendMsg.setToolTipText("New message");	
-		
+		this.addWindowListener(this);
 		JScrollPane scrollPaneNewMsg = new JScrollPane(textAreaSendMsg);
 		scrollPaneNewMsg.setViewportBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		panelSendMsg.add(scrollPaneNewMsg, BorderLayout.CENTER);		
